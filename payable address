@@ -1,0 +1,26 @@
+pragma solidity ^0.8.6;
+
+contract Payable{
+    //payable address can send and receive ether
+    address  payable public owner;
+    //payable constructor can receive ether
+    constructor() payable{
+        owner= payable(msg.sender);
+    }
+    //this function can receive ether
+    function deposit() public payable{}
+
+    //this cannot accept ethers
+    function nonPayable() public{}
+    function withdraw() public{
+        uint amount = address(this).balance;
+        (bool success,)=owner.call{value:amount}("");//("") indicates fallback function
+
+        require(success,"Failed to receive ether");
+    }
+    function transfer(address payable _to,uint _amount) payable public{
+        (bool success,)=_to.call{value:_amount
+}("");
+        require(success,"Failed to send ether to address");
+    }
+}
